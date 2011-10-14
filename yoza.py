@@ -55,10 +55,17 @@ dirname = hdir + "." + fname + "/"  #Check for .tralf/.<fiename>
 
 os.chdir(dirname)
 log = subprocess.Popen(["git", "log", "--oneline"], stderr=subprocess.STDOUT, stdout=subprocess.PIPE)
-count = subprocess.Popen(["wc", "-l"], stderr=subprocess.STDOUT, stdin=subprocess.PIPE)
-logdata = log.stdout.read()
-print count.communicate(logdata) # number of changes, I think
-print logdata
+logblob = log.stdout.read()
+logdata = logblob.splitlines()
+count = len(logdata)
+print "-" + str(count) + " Entries-"
+change_index = []
+for i, datum in enumerate(logdata):
+    datum = (count - 1 - i, datum.split(" \"")[0])
+    change_index.append(datum)
+change_index.sort()
+for entry in change_index:
+    print str(entry[0]) + ": " + str(entry[1])
 #       logout = log.communicate()[0]
 #       print logout
 #       print count.communicate()
