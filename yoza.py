@@ -70,4 +70,19 @@ for entry in change_index:
 #       print logout
 #       print count.communicate()
 #call(["git", "commit", "-am", '"Tralf History"'], stderr=subprocess.STDOUT, stdout=subprocess.PIPE)
+mode = 1
+u_input = 0
+i = 0
+while u_input != 'q' and i < count and i >= 0:
+    frame = subprocess.Popen(["git", "show", str(change_index[i][1])+":"+fname], stderr=subprocess.STDOUT, stdout=subprocess.PIPE)
+    print frame.stdout.read()
+    u_input = raw_input(fname+str(i) + ':')
+
+    try:
+        i = int(u_input)
+    except:
+        if u_input == 'l':
+            mode *= -1
+
+        i += 1*mode
 os.chdir("../../")
