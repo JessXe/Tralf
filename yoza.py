@@ -96,8 +96,8 @@ class GitManager():
     def buildTable(self):
         #  Soooo. . . this shit here like, pulls up the git log and creates a local table:
         #
-        #    ID|GIT HASH|YEAR-MONTH-DAY|HOUR:MINUTE:SECOND    #
-        #    --|--------|--------------|------------------    #
+        #    ID|GIT HASH|YEAR-MONTH-DAY|HOUR:MINUTE:SECOND|CHANGE_LOC    #
+        #    --|--------|--------------|------------------|----------    #
         #
         #   It's totally baller
         log = subprocess.Popen(["git", "log", "--pretty=format:%H %ci"], stderr=subprocess.STDOUT, stdout=subprocess.PIPE)
@@ -108,18 +108,32 @@ class GitManager():
         index = []
         for i, datum in enumerate(logdata):
             parsed = datum.split(" ")
-            record = (self.count - 1 - i, parsed[0], parsed[1], parsed[2])
+            record = [self.count - 1 - i, parsed[0], parsed[1], parsed[2]]
             index.append(record)
         index.sort()      #Put them in order from Oldest to Newest, for funsies
-        print "#    ID|GIT HASH|YEAR-MONTH-DAY|HOUR:MINUTE:SECOND    #"
-        print "#    --|--------|--------------|------------------    #"
         for entry in index:
-            print str(entry[0]) + " | " + entry[1] + " | " + entry[2] + " | " + entry[3]
+            i = entry[0]
+            if i > 0:
+                linechange = subprocess.Popen(["git", "diff", "--unified=1", str(entry[1]), str(index[i-1][1])], stderr=subprocess.STDOUT, stdout=subprocess.PIPE)
+            else: linechange = subprocess.Popen(["git", "diff", "--unified=1", str(entry[1]), str(index[i+1][1])], stderr=subprocess.STDOUT, stdout=subprocess.PIPE)
+            lc = linechange.stdout.read()
+            try:
+                linenum =  int(lc.splitlines()[4][4:].split(",")[0]) + 1
+            except: linenum = 0
+            entry.append(linenum)
+        print "#    ID|GIT HASH|YEAR-MONTH-DAY|HOUR:MINUTE:SECOND|CHANGE_LOC    #"
+        print "#    --|--------|--------------|------------------|----------    #"
+        for entry in index:
+            print str(entry[0]) + " | " + entry[1] + " | " + entry[2] + " | " + entry[3] + " | " + str(entry[4])
         return index
 
     def getFrame(self, i):
         frame = subprocess.Popen(["git", "show", str(self.change_index[i][1])+":"+self.fname], stderr=subprocess.STDOUT, stdout=subprocess.PIPE)
-        return frame.stdout.read()
+        record = self.change_index[i]
+        linenum = record[4]
+        date = record[2]
+        time = record[3]
+        return [linenum, frame.stdout.read(), date, time]
 
     def fCount(self):
         return self.count
@@ -139,19 +153,35 @@ Interface = DjangoInterface(fname)
 #This part will emulate an interface using the frame-by-frame style
 mode = 1
 u_input = 0
-print Interface.refresh()
+print_height = 30
+disp = Interface.refresh()
+#print disp[1] + "\nEdit at: " + str(disp[0])
 while u_input != 'q':
     i = Interface.checkFrameNum()
     u_input = raw_input(fname+str(i) + ':')
 
     try:
         i = int(u_input)
-        print Interface.jumpTo(i)
+        disp = Interface.jumpTo(i)
     except:
         if u_input == 'l':
             mode *= -1
 
-        if mode > 0:  print Interface.nFrameButton()
-        else: print Interface.pFrameButton()
+        if mode > 0:
+            disp = Interface.nFrameButton()
+        else:
+            disp = Interface.pFrameButton()
 
+    os.system('clear')
+    try:
+        print str(disp[0]-(print_height/2))
+        t = disp[1].splitlines()
+        for j, e in enumerate(t):
+            if j + (print_height/2) >= disp[0] and j - (print_height/2) <= disp[0]:
+                print e
+        print "\n" + str(disp[0]+(print_height/2)) + "\nEdit at line: " + str(disp[0])
+        print "Filesize " + str(len(t))
+        print str(disp[2]) + " " + str(disp[3]) 
+#       print disp[1] + "\nEdit at: " + str(disp[0])
+    except: print "At history limit!"
 os.chdir("../../")
