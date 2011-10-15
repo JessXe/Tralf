@@ -54,18 +54,28 @@ dirname = hdir + "." + fname + "/"  #Check for .tralf/.<fiename>
 #check_init(dirname)
 
 os.chdir(dirname)
-log = subprocess.Popen(["git", "log", "--oneline"], stderr=subprocess.STDOUT, stdout=subprocess.PIPE)
+#  Soooo. . . this shit here like, pulls up the git log and creates a local table:
+#
+#    ID|GIT HASH|YEAR-MONTH-DAY|HOUR:MINUTE:SECOND    #
+#    --|--------|--------------|------------------    #
+#
+#   It's totally baller
+
+log = subprocess.Popen(["git", "log", "--pretty=format:%H %ci"], stderr=subprocess.STDOUT, stdout=subprocess.PIPE)
 logblob = log.stdout.read()
 logdata = logblob.splitlines()
 count = len(logdata)
 print "-" + str(count) + " Entries-"
 change_index = []
 for i, datum in enumerate(logdata):
-    datum = (count - 1 - i, datum.split(" \"")[0])
-    change_index.append(datum)
-change_index.sort()
+    parsed = datum.split(" ")
+    record = (count - 1 - i, parsed[0], parsed[1], parsed[2])
+    change_index.append(record)
+change_index.sort()      #Put them in order from Oldest to Newest, for funsies
+print "#    ID|GIT HASH|YEAR-MONTH-DAY|HOUR:MINUTE:SECOND    #"
+print "#    --|--------|--------------|------------------    #"
 for entry in change_index:
-    print str(entry[0]) + ": " + str(entry[1])
+    print str(entry[0]) + " | " + entry[1] + " | " + entry[2] + " | " + entry[3]
 #       logout = log.communicate()[0]
 #       print logout
 #       print count.communicate()
