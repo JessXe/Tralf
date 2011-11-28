@@ -1,16 +1,32 @@
 class TralfGUI {
-  var pref;
-  var suff;
+  var tralf_data;
+  var screenDOM;
+  var cur_frame;
   
   TralfGUI() {
-    pref = "<div id=\"frame\"><div class=\"message\">";
-    suff = "</div></div>";
+    screenDOM = document.query("#screen");
+    tralf_data = document.query("#tralf_data");
+    cur_frame = 0;
   }
   
-  set message(mes) => document.query("#screen").innerHTML = pref + mes + suff;
+  set screen(mes) => screenDOM.innerHTML = "<div id=\"frame\">" + mes + "</div>";
+  set message(mes) => screen = "<div class=\"message\">" + mes + "</div>";
 
+  set frame(i) {//will need to check for out of bounds etc
+    var cframe;
+    cur_frame = i;
+    cframe = tralf_data.queryAll(".frame")[i].queryAll(".content")[0].innerHTML;
+    screen = cframe;
+  }
+  
+  get frame() => cur_frame;
+  
+  get frame_count() => tralf_data.queryAll(".frame").length;
+  
+  
   void load() {
     message = "Buffering . . .";
+    frame = 0;
   }
   
   void play() {
@@ -18,19 +34,19 @@ class TralfGUI {
   }
   
   void first() {
-    message = "First Frame!";
+    frame = 0;
   }
   
-  void last() {
-    message = "Last Frame!?!";
+  void last() {//Need to check for exceptions
+    frame = frame_count-1;
   }
   
-  void prev() {
-    message = "prev";
+  void prev() {//Need to check for exceptions
+    frame -= 1;
   }
   
-  void next() {
-    message = "neXt!";
+  void next() {//Need to check for exceptions
+    frame += 1;
   }
   
   void stop() {
@@ -69,13 +85,6 @@ class TralfGUI {
       last();
     });
     
-    for(int i = 0; i < 10; i++) {
-      message = i;
-    }
-    
-    var tralf;
-    tralf = document.query("#traf_data");
-    message = tralf.length;
   }
 }
 
