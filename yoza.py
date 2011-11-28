@@ -12,6 +12,10 @@ class DisplayModule():
         self.cur_frame = 0
         self.max_frame = self.Git.fCount()
 
+    def testEnd(self):
+        if self._atMax(): return True
+        else: return False
+
     def nFrame(self):
         """Advance to next History Frame
         Returns Frame Record
@@ -20,8 +24,10 @@ class DisplayModule():
         self.cur_frame += 1
         if not self._atMax():
             return self.getCurFrame()
-        else: self.cur_frame -= 1
+        else:
+            self.cur_frame -= 1
             #Probably should throw an exception here
+            raise EOFError("File History end reached")
 
     def pFrame(self):
         """Regress to previous History Frame
@@ -31,8 +37,10 @@ class DisplayModule():
         self.cur_frame -= 1
         if not self._atMin():
             return self.getCurFrame()
-        else: self.cur_frame += 1
+        else:
+            self.cur_frame += 1
             #Probably should throw an exception here
+            raise EOFError("File History beginning reached")
 
     def getCurFrame(self):
         """Return current History Frame
@@ -57,7 +65,7 @@ class DisplayModule():
         return self.cur_frame 
 
     def _outOfRange(self):
-        if self.atMax() or self.atMin(): return True
+        if self._atMax() or self._atMin(): return True
         else: return False
 
     def _atMax(self):
@@ -80,10 +88,16 @@ class DjangoInterface():
         self.Player = DisplayModule(filename)
 
     def nFrameButton(self):
-        return self.Player.nFrame()
+        res = ""
+        try: res = self.Player.nFrame()
+        except EOFError as e: res = self.Player.getCurFrame()
+        return res
 
     def pFrameButton(self):
-        return self.Player.pFrame()
+        res = ""
+        try: res = self.Player.pFrame()
+        except EOFError as e: res = self.Player.getCurFrame()
+        return res
 
     def jumpTo(self, index):
         return self.Player.iFrame(index)

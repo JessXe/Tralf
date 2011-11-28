@@ -16,9 +16,23 @@
 #frame
 {
   text-align:center;
+*/  border:1px dashed red; */
 }
 
-#play
+.message
+{
+  text-align:center;
+  width:200px;
+  padding:1px;
+  
+  border:2px dotted black;
+  
+  margin-left:auto;
+  margin-right:auto;
+  margin-top:185px;
+}
+
+.play_button
 {
   background-color:#00ff00;
   height:17px;
@@ -26,11 +40,20 @@
   padding:1px;
   border:2px solid black;
   margin:1px;
-  margin-left:5px;
-  display:inline;
- }
+}
  
- #stop
+#play
+{
+  display:inline;
+}
+
+#bplay
+{
+  margin-left:auto;
+  margin-right:auto;
+}
+ 
+.stop_button
  {
    background-color:#ff0000;
    height:17px;
@@ -39,4 +62,49 @@
    border:2px solid black;
    margin:1px;
    display:inline;
+ }
+ 
+.fframe_button
+{
+  background-color:#00ccff;
+  height:17px;
+  width:30px;
+  padding:1px;
+  border:2px solid black;
+  margin:1px;
+  margin-left:25px;
+  display:inline;
+ }
+ 
+.lframe_button
+{
+  background-color:#00ccff;
+  height:17px;
+  width:30px;
+  padding:1px;
+  border:2px solid black;
+  margin:1px;
+  display:inline;
+ }
+ 
+.pframe_button
+{
+  background-color:#ff9900;
+  height:17px;
+  width:30px;
+  padding:1px;
+  border:2px solid black;
+  margin:1px;
+  display:inline;
+ }
+ 
+.nframe_button
+{
+  background-color:#ff9900;
+  height:17px;
+  width:30px;
+  padding:1px;
+  border:2px solid black;
+  margin:1px;
+  display:inline;
  }
