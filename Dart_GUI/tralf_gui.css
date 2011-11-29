@@ -1,16 +1,17 @@
 #player
 {
-  width:600px;
+  width:800px;
   align-center;
 }
 
 #screen
 {
   height:400px;
-  width:590px
+  width:790px
   padding:5px;
   border:2px solid black;
   margin:5px;
+  overflow:auto;
 }
 
 #frame
@@ -18,6 +19,28 @@
 */  text-align:center; */
 */  border:1px dashed red; */
 }
+
+.pchange
+{
+  background-color:cyan;
+}
+.cchange
+{
+  background-color:yellow;
+}
+
+.nchange
+{
+  background-color:orange;
+}
+
+.label
+{
+  height:17px;
+  border:1px solid black;
+  margin:1px;
+  display:inline;
+ }
 
 .message
 {

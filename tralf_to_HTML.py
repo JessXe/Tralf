@@ -5,6 +5,7 @@ import os.path
 import sys
 from subprocess import call
 import subprocess
+import HTML_CONV
 
 class DisplayModule():
     def __init__(self, filename):
@@ -174,7 +175,7 @@ while 1==1:
                  str(frame[3]) + "</div>\n")
     cont = frame[1].split('\n')
     html_cont = ""
-    for line in cont: html_cont += str(line) + "<br>"
+    for line in cont: html_cont += HTML_CONV.plaintext2html(line) + "<br>"
     html_cont += "\n"
     html_line += (tab + tab + "<div class=\"content\">" +
                  html_cont + tab + tab + "</div>\n" +
