@@ -19,14 +19,16 @@ class TralfGUI {
     var lines = cont.split("<br>"); 
     int lnum;
     int cedit = Math.parseInt(cframe.queryAll(".edit_loc")[0].innerHTML);
-    int pedit = 0;
-    int nedit = 0;
+    int pedit;
+    int nedit;
     if(i > 0) {
       pedit = Math.parseInt(tralf_data.queryAll(".frame")[i-1].queryAll(".edit_loc")[0].innerHTML);
     }
+    else {pedit = 0;}
     if (i < frame_count-1) {
       nedit = Math.parseInt(tralf_data.queryAll(".frame")[i+1].queryAll(".edit_loc")[0].innerHTML);
     }
+    else {nedit = 0;}
     cur_frame = i;
     for(int j = 0; j < lines.length; j++) {//Need to optimize this later
       lnum = j+1;
