@@ -85,12 +85,9 @@ class TralfGUI {
   
   void auto_next() {
     document.window.setTimeout(() {
-      if(!paused) {
+      if(frame < frame_count-1 && !paused) {
         next();
-        if (frame < frame_count-1){
-          auto_next();
-        }
-        else {pause();}
+        auto_next();
       }
       else {pause();}
     }, 300);
@@ -132,6 +129,8 @@ class TralfGUI {
       if (e.which == 39) {next();}
       if (e.which == 37) {prev();}
       if (e.which == 32) {play();}
+      if (e.which == 36) {first();}
+      if (e.which == 35) {last();}
     });
     
     document.query("#bplay").on.click.add((e) {
