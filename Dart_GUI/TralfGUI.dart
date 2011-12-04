@@ -7,7 +7,7 @@ class TralfGUI {
   TralfGUI() {
     screenDOM = document.query("#screen");
     tralf_data = document.query("#tralf_data");
-    cur_frame = 0;
+    cur_frame = -1;
     paused = true;
   }
 
@@ -60,6 +60,16 @@ class TralfGUI {
   
   get frame_count() => tralf_data.queryAll(".frame").length;
   
+  
+  void input_frame_num() {//Would rather this not be a pop-up, but it works for now; commented code is closer to what wanted, just need to figure out how to get input
+    frame = Math.parseInt(document.window.prompt("Jump to Frame:", frame.toString()));
+/*    document.query("#fnum").innerHTML = "<input id=\"fin\" value=\"" + frame + "\"></input>";
+    var fin = document.query("#fin");
+    fin.focus();
+    fin.on.keyDown.add((e) {
+      if(e.which == 13) {jump_to();}
+    });
+*/  }
   
   void load() {
     message = "Buffering . . .";
@@ -155,6 +165,10 @@ class TralfGUI {
     
     document.query("#lframe").on.click.add((e) {
       last();
+    });
+    
+    document.query("#fnum").on.click.add((e) {
+      input_frame_num();
     });
     
   }

@@ -41,6 +41,11 @@
   margin:1px;
   display:inline;
  }
+ 
+#fin
+{
+  width:25px;
+}
 
 .message
 {
