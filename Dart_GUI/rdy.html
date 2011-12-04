@@ -11,16 +11,20 @@
   <body>
     <script type="text/javascript" src="tralf_gui.dart.app.js"></script>
     <section id="player">
-      <div id="screen">p</div>
-      <div class="fframe_button" id="fframe">|<<<</div>
-      <div class="pframe_button" id="pframe">|<</div>
-      <div class="play_button" id="play">></div>
-      <div class="nframe_button" id="nframe">>|</div>
-      <div class="lframe_button" id="lframe">>>>|</div>
-      <div class="label" id="fnum">None</div>
-      <div class="label" id="fdate">None</div>
-      <div class="label" id="ftime">None</div>
+      <div id="screen">Player failed to start</div>
+      <div class="play_bar"></div>
+      <div class="label" id="fnum">--</div>
+      <div class="play_button" id="play"><span class="hide">_____</span></div>
+      <div class="fframe_button" id="fframe"></div>
+      <div class="pframe_button" id="pframe"></div>
+      <div class="nframe_button" id="nframe"></div>
+      <div class="lframe_button" id="lframe"></div>
+      <div class="label" id="fdate">0000-00-00</div>
+      <div class="label" id="ftime">--:--:--</div>
     </section>
+    <br>
+    <span id="toggle_lnum">Toggle Line Numbers</span><br>
+    <span id="toggle_ascroll">Toggle Auto-Scroll</span>
   </body>
 </html>
 

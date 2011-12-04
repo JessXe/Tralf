@@ -1,16 +1,23 @@
 #player
 {
+  height:405px;
   width:800px;
+  border-top:7px solid #333333;
+  border-bottom:7px solid #333333;
+  border-left:1px solid #333333;
+  border-right:1px solid #333333;
+  border-radius: 15px 15px 15px 15px / 7px 7px 7px 7px;
+  -moz-border-radius: 15px 15px 15px 15px / 7px 7px 7px 7px;
   align-center;
+  padding-bottom:15px;
 }
 
 #screen
 {
-  height:400px;
+  height:405px;
   width:790px
-  padding:5px;
-  border:2px solid black;
-  margin:5px;
+//  border:2px solid black;
+  margin-left:1px;
   overflow:auto;
 }
 
@@ -20,61 +27,26 @@
 */  border:1px dashed red; */
 }
 
-.pchange
-{
-  background-color:cyan;
-}
-.cchange
-{
-  background-color:yellow;
-}
 
-.nchange
+.play_bar
 {
-  background-color:orange;
+  height:15px;
+  background-color:#a6a8b0;
+  position:relative;
 }
-
-.label
-{
-  height:17px;
-  border:1px solid black;
-  margin:1px;
-  display:inline;
- }
- 
-#fin
-{
-  width:25px;
-}
-
-.message
-{
-  text-align:center;
-  width:200px;
-  padding:1px;
-  
-  border:2px dotted black;
-  
-  margin-left:auto;
-  margin-right:auto;
-  margin-top:185px;
-}
-
 .play_button
 {
-  background-color:#00ff00;
-  height:17px;
-  width:30px;
-  padding:1px;
-  padding-left:5px;
-  padding-right:5px;
-  border:2px solid black;
-  margin:1px;
+  background-image:url('img/pb.png');
+  background-repeat:no-repeat;
+  height:25px;
+  width:45px;
 }
  
 #play
 {
-  display:inline;
+//  display:inline;
+  position:absolute;
+  top:482px;
 }
 
 #bplay
@@ -84,18 +56,98 @@
 }
  
 .pause_button
- {
-   background-color:#ff0000;
-   height:17px;
-   width:30px;
-   padding:1px;
-   border:2px solid black;
-   margin:1px;
-   padding-left:6px;
-   padding-right:6px;
-   display:inline;
- }
- 
+{
+  background-image:url('img/pab.png');
+  background-repeat:no-repeat;
+  height:25px;
+  width:45px;
+  position:absolute;
+  top:487px;
+}
+
+#fnum
+{
+  color:#a6a8b0;
+  text-align:center;
+  background-color:#333333;
+  height:21px;
+  width:36px;
+  border:2px solid #333333;
+  border-radius: 4px 0px 4px 4px / 2px 2px 2px 2px;
+  -moz-border-radius: 4px 0px 4px 4px / 2px 2px 2px 2px;
+  position:absolute;
+  top:484px;
+  left:771px;
+}
+
+#fdate
+{
+  color:#a6a8b0;
+  position:absolute;
+  top:85px;
+  left:661px;
+}
+
+#ftime
+{
+  color:#a6a8b0;
+  position:absolute;
+  top:85px;
+  left:740px;
+}
+
+.lnum
+{
+  width:15px;
+  margin-right:10px;
+  display:inline-block;
+}
+
+.hide
+{
+  visibility:hidden;
+}
+.pchange
+{
+  color:#660099;
+}
+.cchange
+{
+  background-color:#66ff00;
+}
+
+.nchange
+{
+  color:#cc3300;
+}
+
+#toggle_lnum
+{
+  border:2px dotted black;
+  margin:1px;
+  display:inline-block;
+}
+
+#toggle_ascroll
+{
+  border:2px dotted black;
+  margin:1px;
+  display:inline-block;
+}
+.message
+{
+  text-align:center;
+  width:200px;
+  padding:1px;
+  
+//  border:2px dotted black;
+  
+  margin-left:auto;
+  margin-right:auto;
+  margin-top:185px;
+}
+
+/* 
 .fframe_button
 {
   background-color:#00ccff;
@@ -106,6 +158,7 @@
   margin:1px;
   margin-left:25px;
   display:inline;
+  visibility:hidden;
  }
  
 .lframe_button
@@ -117,6 +170,7 @@
   border:2px solid black;
   margin:1px;
   display:inline;
+  visibility:hidden;
  }
  
 .pframe_button
@@ -128,6 +182,7 @@
   border:2px solid black;
   margin:1px;
   display:inline;
+  visibility:hidden;
  }
  
 .nframe_button
@@ -139,4 +194,6 @@
   border:2px solid black;
   margin:1px;
   display:inline;
+  visibility:hidden;
  }
+*/

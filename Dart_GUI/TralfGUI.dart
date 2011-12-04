@@ -3,12 +3,16 @@ class TralfGUI {
   var screenDOM;
   var cur_frame;
   var paused;
+  var displnum;
+  var autoscroll;
   
   TralfGUI() {
     screenDOM = document.query("#screen");
     tralf_data = document.query("#tralf_data");
     cur_frame = -1;
     paused = true;
+    displnum = false;
+    autoscroll = true;
   }
 
   set screen(mes) => screenDOM.innerHTML = "<div id=\"frame\">" + mes + "</div>";
@@ -20,6 +24,7 @@ class TralfGUI {
     var formatted = "";
     var lines = cont.split("<br>"); 
     int lnum;
+    var lnum_el = "-";
     int cedit = Math.parseInt(cframe.queryAll(".edit_loc")[0].innerHTML);
     int pedit;
     int nedit;
@@ -34,18 +39,19 @@ class TralfGUI {
     cur_frame = i;
     for(int j = 0; j < lines.length; j++) {//Need to optimize this later
       lnum = j+1;
+      if(displnum) {lnum_el = "<span class=\"lnum\">" + lnum.toString() + "</span>|";}
       if(lnum == cedit) {
-        formatted += "<div class=\"cchange\" id=\"focus\">" + lnum.toString() + " |" + lines[j] + "</div>";
+        formatted += "<span class=\"cchange\" id=\"focus\">" + lnum_el + lines[j] + "</span><br>";
       }
       else {
         if(lnum == pedit){
-          formatted += "<div class=\"pchange\">" + lnum.toString() + " |" + lines[j] + "</div>";
+          formatted += "<span class=\"pchange\">" + lnum_el + lines[j] + "</span><br>";
         }
         else {
           if(lnum == nedit){
-            formatted += "<div class=\"nchange\">" + lnum.toString() + " |" + lines[j] + "</div>";
+            formatted += "<span class=\"nchange\">" + lnum_el + lines[j] + "</span><br>";
           }
-          else {formatted += lnum.toString() + " |" + lines[j] + "<br>";}
+          else {formatted += lnum_el + lines[j] + "<br>";}
         }
       }
     }
@@ -53,7 +59,7 @@ class TralfGUI {
     document.query("#fnum").innerHTML = i;
     document.query("#fdate").innerHTML = cframe.queryAll(".date")[0].innerHTML;
     document.query("#ftime").innerHTML = cframe.queryAll(".time")[0].innerHTML;
-    if(cedit > 0) {document.query("#focus").scrollIntoView();} //Need to write function so it also check if outside of upper frame range
+    if(cedit > 0 && autoscroll) {document.query("#focus").scrollIntoView();} //Need to write function so it also check if outside of upper frame range
   }
   
   get frame() => cur_frame;
@@ -85,7 +91,6 @@ class TralfGUI {
     if(paused) {
       paused = false;
       var pb = document.query("#play");
-      pb.innerHTML = "||";
       pb.classes.remove("play_button");
       pb.classes.add("pause_button");
       auto_next();
@@ -105,10 +110,19 @@ class TralfGUI {
   
   void pause() {
     var pb = document.query("#play");
-    pb.innerHTML = ">";
     pb.classes.remove("pause_button");
     pb.classes.add("play_button");
     paused = true;
+  }
+  
+  void toggle_lnum() {
+    if(displnum) {displnum = false;}
+    else {displnum = true;}
+  }
+  
+  void toggle_ascroll() {
+    if(autoscroll) {autoscroll = false;}
+    else {autoscroll = true;}
   }
   
   void first() {
@@ -133,7 +147,7 @@ class TralfGUI {
   }
   
   void ready() {
-    message = "<div class=\"play_button\" id=\"bplay\">></div></div></div>";
+    message = "<div class=\"play_button\" id=\"bplay\"></div></div></div>";
 
     document.on.keyDown.add((e) {
       if (e.which == 39) {next();}
@@ -169,6 +183,14 @@ class TralfGUI {
     
     document.query("#fnum").on.click.add((e) {
       input_frame_num();
+    });
+    
+    document.query("#toggle_lnum").on.click.add((e) {
+      toggle_lnum();
+    });
+    
+    document.query("#toggle_ascroll").on.click.add((e) {
+      toggle_ascroll();
     });
     
   }
