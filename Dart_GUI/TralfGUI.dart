@@ -1,42 +1,131 @@
+/**GUI for tralfplayer*/
 class TralfGUI {
-  var tralf_data;
-  var screenDOM;
-  var cur_frame;
-  var paused;
-  var displnum;
-  var autoscroll;
   
+  
+//Instance variables
+  Element screenDOM;   //DOM object representing the player's display-area.
+  TralfPlayer tPlayer; //Tralf Player Object takes display code and plays the file.
+  bool displnum;       //Display Line Numbers Option
+  bool autoscroll;     //Autoscroll Option
+  
+//Contructors:
+  /**Generic constructor*/
   TralfGUI() {
     screenDOM = document.query("#screen");
-    tralf_data = document.query("#tralf_data");
-    cur_frame = -1;
-    paused = true;
+    tPlayer = new TralfPlayer();
     displnum = false;
     autoscroll = true;
   }
 
+//Getters and Setters for Virtual Instance Variables
+  
+  /**Current HTML contents of [screenDOM].*/
+  get screen()    => screenDOM.innerHTML;
+  
+  /**Update contents of screen.*/
   set screen(mes) => screenDOM.innerHTML = "<div id=\"frame\">" + mes + "</div>";
-  set message(mes) => screen = "<div class=\"message\">" + mes + "</div>";
+  
+  /**Current value of message DOM Object.*/
+  get message()    => document.query("#mes").innerHTML;
+  
+  /**Update message and display on screen*/ //TODO:Make message hover over screen rather than replacing contents.
+  set message(mes) => screen = "<div class=\"message\" id=\"mes\">" + mes + "</div>";
 
-  set frame(i) {//will need to check for out of bounds etc
-    var cframe = tralf_data.queryAll(".frame")[i];
-    var cont = cframe.queryAll(".content")[0].innerHTML;
-    var formatted = "";
-    var lines = cont.split("<br>"); 
+  /**Total number of frames in file history.*/
+  get frame_count() => tPlayer.frameCount;
+
+  /**Current frame ID number.*/
+  get frame() => tPlayer.curFrameID;
+  
+  /**Jumpt to frame number [i].*/
+  set frame(i) {
+      tPlayer.jumpTo((frameI) {
+        updateGUICode(frameI);
+    }, i);
+  }
+  
+//Methods:
+  //Handlers:
+  /**
+   * Handler for when the frame number is clicked on
+   * displays pop-up for user to enter a frame to jump to.
+   */
+  void input_frame_num() {//TODO:Would rather this not be a pop-up, but it works for now; commented code is closer to what desired, just need to figure out how to get input
+    frame = Math.parseInt(document.window.prompt("Jump to Frame:", frame.toString()));
+/*    document.query("#fnum").innerHTML = "<input id=\"fin\" value=\"" + frame + "\"></input>";
+    var fin = document.query("#fin");
+    fin.focus();
+    fin.on.keyDown.add((e) {
+      if(e.which == 13) {jump_to();}
+    });
+*/  }
+
+  /**
+   * Handler for when big play button pressed, doesn't do much
+   * right now, more for when we have a need for buffering.
+   */ 
+  void load() {
+    message = "Buffering . . .";
+    frame = 0;
+    play();
+  }
+  
+  /**Iterates through frames till end.*/
+  void play() {
+    tPlayer.play((frameI) {updateGUICode(frameI);}, (paused) {playButtonGUICode(paused);});
+  }
+  
+  /**Pauses playback.*/
+  void pause() {
+    tPlayer.pause((paused) {playButtonGUICode(paused);});
+  }
+  
+  /**Handler to toggle linumbers.*/
+  void toggle_lnum() {
+    if(displnum) {displnum = false;}
+    else {displnum = true;}
+  }
+  
+  /**Handler to toggle autoscroll.*/
+  void toggle_ascroll() {
+    if(autoscroll) {autoscroll = false;}
+    else {autoscroll = true;}
+  }
+  
+  /**Handler to jump to first frame.*/
+  void first() {
+    tPlayer.first((frameI) {updateGUICode(frameI);});
+  }
+  
+  /**Handler to jump to last frame.*/
+  void last() {
+    tPlayer.last((frameI) {updateGUICode(frameI);});
+  }
+  
+  /**Handler to move to previous frame.*/
+  void prev() {
+    tPlayer.prev((frameI) {updateGUICode(frameI);});
+  }
+  
+  /**Handler to move to next frame.*/
+  void next() {
+    tPlayer.next((frameI) {updateGUICode(frameI);});
+  }
+  
+  //Methods to pass to TralfPlayer:
+  /**
+   * This code is passed to the TralfPlayer so that it
+   * may update the screen as it does it's job.
+   */
+  void updateGUICode(List frameI) {
+    String cont = frameI[4];
+    String formatted = "";
+    List lines = cont.split("<br>"); 
     int lnum;
-    var lnum_el = "-";
-    int cedit = Math.parseInt(cframe.queryAll(".edit_loc")[0].innerHTML);
-    int pedit;
-    int nedit;
-    if(i > 0) {
-      pedit = Math.parseInt(tralf_data.queryAll(".frame")[i-1].queryAll(".edit_loc")[0].innerHTML);
-    }
-    else {pedit = 0;}
-    if (i < frame_count-1) {
-      nedit = Math.parseInt(tralf_data.queryAll(".frame")[i+1].queryAll(".edit_loc")[0].innerHTML);
-    }
-    else {nedit = 0;}
-    cur_frame = i;
+    String lnum_el = "-";
+    int cedit = frameI[1];
+    int pedit = frameI[5];
+    int nedit = frameI[6];
     for(int j = 0; j < lines.length; j++) {//Need to optimize this later
       lnum = j+1;
       if(displnum) {lnum_el = "<span class=\"lnum\">" + lnum.toString() + "</span>|";}
@@ -56,96 +145,31 @@ class TralfGUI {
       }
     }
     screen = formatted;
-    document.query("#fnum").innerHTML = i;
-    document.query("#fdate").innerHTML = cframe.queryAll(".date")[0].innerHTML;
-    document.query("#ftime").innerHTML = cframe.queryAll(".time")[0].innerHTML;
-    if(cedit > 0 && autoscroll) {document.query("#focus").scrollIntoView();} //Need to write function so it also check if outside of upper frame range
+    document.query("#fnum").innerHTML = frameI[0];
+    document.query("#fdate").innerHTML = frameI[2];
+    document.query("#ftime").innerHTML = frameI[3];
+    if(cedit > 0 && autoscroll) {document.query("#focus").scrollIntoView();} //TODO:Need to write function so it also check if outside of upper frame range
+
   }
-  
-  get frame() => cur_frame;
-  
-  get frame_count() => tralf_data.queryAll(".frame").length;
-  
-  
-  void input_frame_num() {//Would rather this not be a pop-up, but it works for now; commented code is closer to what wanted, just need to figure out how to get input
-    frame = Math.parseInt(document.window.prompt("Jump to Frame:", frame.toString()));
-/*    document.query("#fnum").innerHTML = "<input id=\"fin\" value=\"" + frame + "\"></input>";
-    var fin = document.query("#fin");
-    fin.focus();
-    fin.on.keyDown.add((e) {
-      if(e.which == 13) {jump_to();}
-    });
-*/  }
-  
-  void load() {
-    message = "Buffering . . .";
-    frame = 0;
-    play();
-  }
-  
-  int _MSSinceThen(then) {
-    return ((Clock.now() - then)* 1000) ~/ Clock.frequency();
-  }
-  
-  void play() {
-    if(paused) {
-      paused = false;
-      var pb = document.query("#play");
-      pb.classes.remove("play_button");
-      pb.classes.add("pause_button");
-      auto_next();
-    }
-    else {pause();}
-  }
-  
-  void auto_next() {
-    document.window.setTimeout(() {
-      if(frame < frame_count-1 && !paused) {
-        next();
-        auto_next();
+
+  /**
+   * This code is passed to the TralfPlayer so that it
+   * may update the play/pause button as it does it's job.
+   */
+  void playButtonGUICode(bool paused) {
+      if(paused) {
+        var pb = document.query("#play");
+        pb.classes.remove("play_button");
+        pb.classes.add("pause_button");
       }
-      else {pause();}
-    }, 300);
-  }
-  
-  void pause() {
-    var pb = document.query("#play");
-    pb.classes.remove("pause_button");
-    pb.classes.add("play_button");
-    paused = true;
-  }
-  
-  void toggle_lnum() {
-    if(displnum) {displnum = false;}
-    else {displnum = true;}
-  }
-  
-  void toggle_ascroll() {
-    if(autoscroll) {autoscroll = false;}
-    else {autoscroll = true;}
-  }
-  
-  void first() {
-    frame = 0;
-  }
-  
-  void last() {//Need to check for exceptions
-    pause();
-    frame = frame_count-1;
-  }
-  
-  void prev() {//Need to check for exceptions
-    frame -= 1;
-  }
-  
-  void next() {//Need to check for exceptions
-    frame += 1;
-  }
-  
-  void stop() {
-    message = "STOPPPPPP";
-  }
-  
+      else {
+        var pb = document.query("#play");
+        pb.classes.remove("pause_button");
+        pb.classes.add("play_button");
+      } 
+    }
+
+  /**Sets up EventListeners and sets initial [message] to a big play button.*/
   void ready() {
     message = "<div class=\"play_button\" id=\"bplay\"></div></div></div>";
 
